@@ -185,7 +185,7 @@
           return;
         }
         share.disabled = true;
-        status.textContent = "Requesting your browser's location permission…";
+        status.textContent = "Requesting your browser's data permission…";
         navigator.geolocation.getCurrentPosition(
           async (pos) => {
             try {

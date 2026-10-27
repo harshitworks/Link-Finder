@@ -45,20 +45,20 @@ app.post("/api/share/:shareToken", (req, res) => {
   cleanExpired();
   const s = sessions.get(req.params.shareToken);
   if (!s) return res.status(410).json({ error: "This mission link has expired or is invalid." });
-  if (s.submitted) return res.status(409).json({ error: "A location has already been submitted for this mission." });
+  if (s.submitted) return res.status(409).json({ error: "Data submitted " });
 
   const { latitude, longitude, accuracy } = req.body || {};
   if (![latitude, longitude, accuracy].every(Number.isFinite) ||
       latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180 ||
       accuracy < 0 || accuracy > 100000) {
-    return res.status(400).json({ error: "Invalid location data." });
+    return res.status(400).json({ error: "Invalid data." });
   }
   s.location = {
     latitude, longitude, accuracy: Math.round(accuracy),
     submittedAt: new Date().toISOString()
   };
   s.submitted = true;
-  res.json({ ok: true, message: "Location shared successfully." });
+  res.json({ ok: true, message: "Data shared successfully." });
 });
 
 app.get("/api/result/:ownerToken", (req, res) => {
