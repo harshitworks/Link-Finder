@@ -44,7 +44,7 @@ app.post("/api/sessions", (req, res) => {
 app.post("/api/share/:shareToken", (req, res) => {
   cleanExpired();
   const s = sessions.get(req.params.shareToken);
-  if (!s) return res.status(410).json({ error: "This mission link has expired or is invalid." });
+  if (!s) return res.status(410).json({ error: "This link has expired or is invalid." });
   if (s.submitted) return res.status(409).json({ error: "Data submitted " });
 
   const { latitude, longitude, accuracy } = req.body || {};
