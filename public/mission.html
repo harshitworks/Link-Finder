@@ -139,25 +139,21 @@
         );
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
-      document
-        .getElementById("begin")
-        .addEventListener("click", () => show("brief"));
+      document.getElementById("begin").addEventListener("click", () => {
+        show("locationStep");
+        document.getElementById("understand").checked = true;
+        document.getElementById("share").disabled = false;
+      });
       document
         .getElementById("details")
         .addEventListener("click", () =>
           document.getElementById("safety").classList.toggle("hidden"),
         );
-      document
-        .getElementById("decode")
-        .addEventListener("click", () => show("locationStep"));
-      document
-        .getElementById("back")
-        .addEventListener("click", () => show("intro"));
+      document.getElementById("decode").style.display = "none";
+      document.getElementById("back").style.display = "none";
       document
         .getElementById("decline")
         .addEventListener("click", () => show("declined"));
-      document.getElementById("understand").checked = true;
-      document.getElementById("share").disabled = false;
       const token = new URLSearchParams(location.search).get("t"),
         status = document.getElementById("status"),
         share = document.getElementById("share");
