@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>Mission Control // Results</title><link rel="stylesheet" href="/style.css"></head>
+<body><main class="shell"><header class="topbar"><span>◈ MISSION CONTROL / RESULTS</span><span class="live"><i class="dot"></i> SECURE</span></header>
+<div class="content"><p class="eyebrow">Private receiver console</p><h1>LOCATION<br>TRANSMISSION.</h1><p id="status" class="status" role="status" aria-live="polite">Waiting for a voluntarily shared location…</p>
+<section id="result" class="hidden"><div class="grid"><div class="tile"><span>LATITUDE</span><strong id="lat"></strong></div><div class="tile"><span>LONGITUDE</span><strong id="lon"></strong></div><div class="tile"><span>EST. ACCURACY</span><strong id="accuracy"></strong></div><div class="tile"><span>RECEIVED</span><strong id="time"></strong></div></div><a id="map" class="buttonlike" target="_blank" rel="noopener noreferrer">Open coordinates in Google Maps ↗</a></section><p class="small">Keep this private results link secret. Anyone who has it can view the submitted coordinates until the session expires.</p></div><footer class="footer"><span>FIELD OPS // RECEIVER</span><span>SESSION EXPIRES IN 30 MIN</span></footer></main>
+<script>
+const status=document.getElementById("status"),key=new URLSearchParams(location.search).get("k");let stopped=false;
+async function check(){if(stopped)return;if(!key||!/^[A-Za-z0-9_-]{40,50}$/.test(key)){status.textContent="Invalid results link.";return;}
+try{const r=await fetch(`/api/result/${encodeURIComponent(key)}`,{cache:"no-store"}),data=await r.json();if(!r.ok){status.textContent=data.error||"Link invalid or expired.";return;}
+if(data.status==="waiting"){status.textContent="No location received yet. Checking again shortly…";setTimeout(check,3000);return;}
+const l=data.location;document.getElementById("lat").textContent=l.latitude;document.getElementById("lon").textContent=l.longitude;document.getElementById("accuracy").textContent=`~${l.accuracy} metres`;document.getElementById("time").textContent=new Date(l.submittedAt).toLocaleString();document.getElementById("map").href=`https://www.google.com/maps?q=${encodeURIComponent(l.latitude+","+l.longitude)}`;document.getElementById("result").classList.remove("hidden");status.textContent="Transmission received.";stopped=true;
+}catch{status.textContent="Connection issue. Refresh to try again.";}}
+check();
+</script></body></html>

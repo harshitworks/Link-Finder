@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>Mission Control // Agent 007</title><link rel="stylesheet" href="/style.css"></head>
+<body><main class="shell"><header class="topbar"><span>◈ MISSION CONTROL / FIELD OPS</span><span class="live"><i class="dot"></i> SYSTEM ONLINE</span></header>
+<div class="content"><div class="stamp">CLASSIFIED // EYES ONLY</div><p class="eyebrow" style="margin-top:28px">Field Operations Division · File 007-A</p><h1>YOUR NEXT<br>MISSION STARTS HERE.</h1>
+<p class="muted">Create a unique mission link, send it to a friend, and keep your private receiver link. The mission page is interactive; location sharing is optional and clearly disclosed.</p>
+<div class="grid"><div class="tile"><span>MISSION ID</span><strong>GX-07 / GREENLIGHT</strong></div><div class="tile"><span>SECURITY LEVEL</span><strong>AGENT ACCESS</strong></div><div class="tile"><span>MODE</span><strong>ONE-TIME SHARE</strong></div><div class="tile"><span>LINK LIFETIME</span><strong>30 MINUTES</strong></div></div>
+<div class="notice status warn">The recipient will be told that the final step requests their current location. Their location is sent only if they choose to share and grant browser permission.</div>
+<div class="actions"><button id="create">Generate mission links →</button></div><p id="status" class="status" role="status" aria-live="polite"></p>
+<section id="links" class="hidden"><div class="rule"></div><label class="linklabel" for="shareUrl">LINK TO SEND TO YOUR FRIEND</label><div class="linkfield"><input id="shareUrl" readonly><button class="secondary" data-copy="shareUrl">Copy</button></div>
+<label class="linklabel" for="ownerUrl">YOUR PRIVATE RESULTS LINK — KEEP SECRET</label><div class="linkfield"><input id="ownerUrl" readonly><button class="secondary" data-copy="ownerUrl">Copy</button></div><p class="small">Both links expire after 30 minutes. Your results link is a secret key: anyone with it can view the submitted coordinates.</p></section>
+</div><footer class="footer"><span>FIELD OPS // TRAINING SIMULATION</span><span>CONSENT FIRST · ONE-TIME SHARE</span></footer></main>
+<script>
+const status=document.getElementById("status"),create=document.getElementById("create");
+create.addEventListener("click",async()=>{create.disabled=true;status.textContent="Generating secure mission links…";try{const r=await fetch("/api/sessions",{method:"POST"});if(!r.ok)throw new Error("Could not generate links. Try again.");const d=await r.json();document.getElementById("shareUrl").value=d.shareUrl;document.getElementById("ownerUrl").value=d.ownerUrl;document.getElementById("links").classList.remove("hidden");status.textContent="Mission links ready. Expires in 30 minutes.";}catch(e){status.textContent=e.message;}finally{create.disabled=false;}});
+document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",async()=>{const input=document.getElementById(b.dataset.copy);try{await navigator.clipboard.writeText(input.value);b.textContent="Copied";}catch{input.select();document.execCommand("copy");b.textContent="Copied";}setTimeout(()=>b.textContent="Copy",1400);}));
+</script></body></html>

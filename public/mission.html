@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>Mission Control // Agent 007</title><link rel="stylesheet" href="/style.css"></head>
+<body><main class="shell">
+<header class="topbar"><span>◈ MISSION CONTROL / FIELD OPS</span><span class="live"><i class="dot"></i> SYSTEM ONLINE</span></header>
+<div class="content">
+<section id="intro">
+<div class="stamp">CLASSIFIED // EYES ONLY</div><p class="eyebrow" style="margin-top:28px">Field Operations Division · File 007-A</p>
+<h1>YOUR NEXT<br>MISSION STARTS HERE.</h1>
+<p class="muted">An interactive mini-mission has arrived. Review the briefing, decode the assignment, and decide whether to proceed.</p>
+<div class="grid"><div class="tile"><span>MISSION ID</span><strong>GX-07 / GREENLIGHT</strong></div><div class="tile"><span>SECURITY LEVEL</span><strong>AGENT ACCESS</strong></div><div class="tile"><span>EST. DURATION</span><strong>60 SECONDS</strong></div><div class="tile"><span>STATUS</span><strong>AWAITING AGENT</strong></div></div>
+<div class="signal"><span></span></div><div class="actions"><button id="begin">▶ Begin mission</button><button class="secondary" id="details">Read safety note</button></div>
+<div id="safety" class="status warn hidden">This is a playful demo. It will not access your device or location unless you choose to continue to the clearly labelled location-sharing step and approve your browser's permission prompt.</div>
+</section>
+<section id="brief" class="hidden"><p class="eyebrow">Step 02 / Briefing decrypted</p><h2>AGENT, YOUR OBJECTIVE IS SIMPLE.</h2><p>A secure message is waiting for you. Before unlocking the final screen, review the operation details below.</p><div class="rule"></div><div class="tile"><span>OPERATION NOTE</span><strong>NO FORCE. YOUR CHOICE, YOUR CONTROL.</strong><p class="small">The next step offers optional one-time location sharing. Your browser will ask for permission only after you press the location-sharing button.</p></div><div class="progress"><i class="on"></i><i class="on"></i><i></i></div><div class="actions"><button id="decode">Unlock final briefing →</button><button class="secondary" id="back">Back</button></div></section>
+<section id="locationStep" class="hidden"><p class="eyebrow">Step 03 / Final briefing</p><div class="stamp">AGENT DECISION REQUIRED</div><h2>SHARE YOUR CURRENT LOCATION?</h2><p>For the final part of this mini-mission, you may send your current coordinates once to the person who created this link. Your browser will request location permission if you choose to continue.</p><ul><li>This sends one location reading, not live tracking.</li><li>You can deny the browser permission or decline below.</li><li>The link expires after 30 minutes.</li></ul><label class="checkline"><input type="checkbox" id="understand"><span>I understand that choosing to continue will request my current location and send it once if I grant permission.</span></label><div class="progress"><i class="on"></i><i class="on"></i><i class="on"></i></div><div class="actions"><button id="share" disabled>◎ Share my location once</button><button class="secondary" id="decline">Decline & exit</button></div><div id="status" class="status" role="status" aria-live="polite"></div></section>
+<section id="complete" class="hidden"><div class="stamp">MISSION UPDATE</div><p class="eyebrow" style="margin-top:28px">Transmission complete</p><h1>MISSION<br>ACCOMPLISHED.</h1><p>Your location was shared once. You can close this page now.</p><div class="tile"><span>TRANSMISSION STATUS</span><strong>✓ RECEIVED</strong></div></section>
+<section id="declined" class="hidden"><p class="eyebrow">Mission closed</p><h2>NO TRANSMISSION SENT.</h2><p>You declined location sharing. No coordinates were sent by this page.</p></section>
+</div><footer class="footer"><span>FIELD OPS // TRAINING SIMULATION</span><span>CONSENT FIRST · ONE-TIME SHARE</span></footer></main>
+<script>
+const sections=["intro","brief","locationStep","complete","declined"];
+function show(id){sections.forEach(s=>document.getElementById(s).classList.toggle("hidden",s!==id));window.scrollTo({top:0,behavior:"smooth"});}
+document.getElementById("begin").addEventListener("click",()=>show("brief"));
+document.getElementById("details").addEventListener("click",()=>document.getElementById("safety").classList.toggle("hidden"));
+document.getElementById("decode").addEventListener("click",()=>show("locationStep"));
+document.getElementById("back").addEventListener("click",()=>show("intro"));
+document.getElementById("decline").addEventListener("click",()=>show("declined"));
+document.getElementById("understand").addEventListener("change",e=>document.getElementById("share").disabled=!e.target.checked);
+const token=new URLSearchParams(location.search).get("t"),status=document.getElementById("status"),share=document.getElementById("share");
+share.addEventListener("click",()=>{
+ if(!token||!/^[A-Za-z0-9_-]{40,50}$/.test(token)){status.textContent="This mission link is invalid.";status.className="status danger";return;}
+ if(!window.isSecureContext){status.textContent="Location sharing requires a secure HTTPS connection.";status.className="status danger";return;}
+ if(!navigator.geolocation){status.textContent="This browser does not support location sharing.";status.className="status danger";return;}
+ share.disabled=true;status.textContent="Requesting your browser's location permission…";
+ navigator.geolocation.getCurrentPosition(async pos=>{
+  try{const r=await fetch(`/api/share/${encodeURIComponent(token)}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({latitude:pos.coords.latitude,longitude:pos.coords.longitude,accuracy:pos.coords.accuracy})});const data=await r.json();if(!r.ok)throw new Error(data.error||"Could not send location.");show("complete");}
+  catch(e){status.textContent=e.message;status.className="status danger";share.disabled=false;}
+ },err=>{status.textContent=({1:"Permission denied. No location was sent.",2:"Location unavailable. You may try again.",3:"Location request timed out. You may try again."})[err.code]||"Could not get location.";status.className="status danger";share.disabled=false;},{enableHighAccuracy:true,timeout:20000,maximumAge:0});
+});
+</script></body></html>
