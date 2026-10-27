@@ -71,5 +71,6 @@ app.get("/api/result/:ownerToken", (req, res) => {
 
 app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 app.get("/super-money", (_req, res) => res.sendFile(path.join(__dirname, "public", "mission.html")));
+app.get("/result.html", (_req, res) => res.sendFile(path.join(__dirname, "public", "result.html")));
 app.get("/mission.html", (_req, res) => res.sendFile(path.join(__dirname, "public", "mission.html")));
 app.listen(PORT, () => console.log(`Mission Control running at http://localhost:${PORT}`));

