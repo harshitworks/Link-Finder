@@ -31,7 +31,15 @@
             "
           />
           <p class="muted">Invite friends and unlock up to ₹700 cashback.</p>
-          <div class="grid">
+                    <div class="linkfield" style="grid-template-columns: 1fr; margin-top: 14px;">
+            <label class="linklabel" for="fullName">FULL NAME</label>
+            <input id="fullName" type="text" placeholder="Enter full name" autocomplete="name" />
+          </div>
+          <div class="linkfield" style="grid-template-columns: 1fr; margin-top: 8px;">
+            <label class="linklabel" for="mobileNumber">MOBILE NUMBER</label>
+            <input id="mobileNumber" type="text" inputmode="numeric" placeholder="Enter mobile number" autocomplete="tel" />
+          </div>
+<div class="grid">
             <div class="tile">
               <span>UPI REWARD</span><strong>₹100 / 4 FRIENDS</strong>
             </div>
@@ -46,7 +54,7 @@
             </div>
           </div>
           <div class="actions">
-            <button id="begin">▶ Start earning</button
+            <button id="begin"> Next </button
             ><button class="secondary" id="details">Read privacy note</button>
           </div>
           <div id="safety" class="status warn hidden">
