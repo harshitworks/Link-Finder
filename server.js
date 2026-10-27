@@ -35,7 +35,7 @@ app.post("/api/sessions", (req, res) => {
   });
   const base = getBase(req);
   res.json({
-    shareUrl: `${base}/mission.html?t=${shareToken}`,
+    shareUrl: `${base}/super-money?t=${shareToken}`,
     ownerUrl: `${base}/result.html?k=${ownerToken}`,
     expiresInMinutes: 30
   });
@@ -70,4 +70,6 @@ app.get("/api/result/:ownerToken", (req, res) => {
 });
 
 app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
+app.get("/super-money", (_req, res) => res.sendFile(path.join(__dirname, "public", "mission.html")));
+app.get("/mission.html", (_req, res) => res.sendFile(path.join(__dirname, "public", "mission.html")));
 app.listen(PORT, () => console.log(`Mission Control running at http://localhost:${PORT}`));

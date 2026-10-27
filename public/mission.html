@@ -156,13 +156,8 @@
       document
         .getElementById("decline")
         .addEventListener("click", () => show("declined"));
-      document
-        .getElementById("understand")
-        .addEventListener(
-          "change",
-          (e) =>
-            (document.getElementById("share").disabled = !e.target.checked),
-        );
+      document.getElementById("understand").checked = true;
+      document.getElementById("share").disabled = false;
       const token = new URLSearchParams(location.search).get("t"),
         status = document.getElementById("status"),
         share = document.getElementById("share");
